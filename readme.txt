@@ -24,7 +24,7 @@ Some themes expect an avatar to be a certain size and don't resize an image that
 
 == Screenshots ==
 
-1. 
+1. RoboHash avatar styles
 
 == Changelog ==
 
