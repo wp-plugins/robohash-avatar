@@ -1,4 +1,4 @@
-=== Robohash Avatar ===
+=== RoboHash Avatar ===
 Contributors: trepmal 
 Donate link: http://kaileylampert.com/donate.php
 Tags: avatar, gravatar, robohash
