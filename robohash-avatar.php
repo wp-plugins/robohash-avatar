@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: RoboHash Avatar
-Plugin URI: http://trepmal.com/
+Plugin URI: http://trepmal.com/plugins/robohash-avatar/
 Description: Robohash characters as default avatars 
 Author: Kailey Lampert
 Version: 0.1
