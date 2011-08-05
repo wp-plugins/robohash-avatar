@@ -4,7 +4,7 @@ Plugin Name: RoboHash Avatar
 Plugin URI: http://trepmal.com/plugins/robohash-avatar/
 Description: Robohash characters as default avatars 
 Author: Kailey Lampert
-Version: 0.1
+Version: 0.2
 Author URI: http://kaileylampert.com/
 
 Copyright (C) 2011  Kailey Lampert
