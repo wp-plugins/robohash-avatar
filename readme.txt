@@ -25,9 +25,17 @@ Some themes expect an avatar to be a certain size and don't resize an image that
 == Screenshots ==
 
 1. RoboHash avatar styles
-2. RoboHash avatars in action
+2. 0.1 version
+
+== Upgrade Notice ==
+
+= 0.2 =
+Now with background options
 
 == Changelog ==
+
+= 0.2 =
+* Now with background options
 
 = 0.1 =
 * Let the bug reports come.
