@@ -4,7 +4,7 @@ Plugin Name: RoboHash Avatar
 Plugin URI: http://trepmal.com/plugins/robohash-avatar/
 Description: Robohash characters as default avatars 
 Author: Kailey Lampert
-Version: 0.2
+Version: 0.3
 Author URI: http://kaileylampert.com/
 
 Copyright (C) 2011  Kailey Lampert
@@ -30,6 +30,8 @@ class robohashavatar {
 		add_filter( 'get_avatar', array( &$this, 'insert_hash' ), 10, 5 );
 		add_action( 'admin_enqueue_scripts', array( &$this, 'scripts' ) );
 		add_action( 'load-options.php', array( &$this, 'update' ) );
+
+		add_action( 'template_redirect', array( &$this, 'front_end_enocde' ) );
 	}
 	function addavatar ( $avatar_defaults ) {
 		$options = get_option( 'robohash_options', array( 'bot' => 'set1', 'bg' => 'bg1' ) );
@@ -49,7 +51,9 @@ class robohashavatar {
 		$bgs .= '</select>';
 		$hidden = '<input type="hidden" id="spinner" value="'. admin_url('images/wpspin_light.gif') .'" />';
 
-		$avatar_defaults[ $this->url . "?set={$options['bot']}&bgset={$options['bg']}" ] = 	$bots.$bgs.$hidden;
+		$avatar_url = "{$this->url}?set={$options['bot']}&bgset={$options['bg']}";
+
+		$avatar_defaults[ $avatar_url ] = 	$bots.$bgs.$hidden;
 
 		return $avatar_defaults;
 	}
@@ -75,5 +79,13 @@ class robohashavatar {
 			update_option( 'robohash_options', $options );
 		}
 	}
+
+	function front_end_enocde() {
+		add_filter( 'option_avatar_default', array( &$this, 'encode_for_display' ) );
+	}
+		function encode_for_display( $option ) {
+			return urlencode( $option );
+		}
+	
 }
 new robohashavatar( );

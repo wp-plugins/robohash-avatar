@@ -34,6 +34,9 @@ Now with background options
 
 == Changelog ==
 
+= 0.3 =
+* Fixed radio button selected state
+
 = 0.2 =
 * Now with background options
 
