@@ -4,7 +4,7 @@ Plugin Name: RoboHash Avatar
 Plugin URI: http://trepmal.com/plugins/robohash-avatar/
 Description: Robohash characters as default avatars 
 Author: Kailey Lampert
-Version: 0.3
+Version: 0.4
 Author URI: http://kaileylampert.com/
 
 Copyright (C) 2011  Kailey Lampert
@@ -27,13 +27,13 @@ class robohashavatar {
 	var $url = 'http://robohash.org/emailhash.png';
 	function robohashavatar( ) {
 		add_filter( 'avatar_defaults' , array( &$this , 'addavatar' ) );
-		add_filter( 'get_avatar', array( &$this, 'insert_hash' ), 10, 5 );
+		add_filter( 'get_avatar', array( &$this, 'insert_hash' ), 11, 5 );
 		add_action( 'admin_enqueue_scripts', array( &$this, 'scripts' ) );
 		add_action( 'load-options.php', array( &$this, 'update' ) );
-
-		add_action( 'template_redirect', array( &$this, 'front_end_enocde' ) );
 	}
 	function addavatar ( $avatar_defaults ) {
+		//create the extra avatar option, with options!
+		//js is used to create a live preview
 		$options = get_option( 'robohash_options', array( 'bot' => 'set1', 'bg' => 'bg1' ) );
 
 		$bots = '<label for="robohash_bot">Body</label> <select id="robohash_bot" name="robohash_bot">';
@@ -51,6 +51,7 @@ class robohashavatar {
 		$bgs .= '</select>';
 		$hidden = '<input type="hidden" id="spinner" value="'. admin_url('images/wpspin_light.gif') .'" />';
 
+		//current avatar, based on saved options
 		$avatar_url = "{$this->url}?set={$options['bot']}&bgset={$options['bg']}";
 
 		$avatar_defaults[ $avatar_url ] = 	$bots.$bgs.$hidden;
@@ -58,14 +59,41 @@ class robohashavatar {
 		return $avatar_defaults;
 	}
 	function insert_hash( $avatar, $id_or_email, $size, $default, $alt ) {
-		if ( strpos( $default, $this->url ) !== false && is_object( $id_or_email ) ) {
+		
+		//determine email address
+		if ( is_numeric($id_or_email) ) 
+			$email = get_userdata( $id_or_email )->user_email;
+		elseif ( is_object($id_or_email) ) 
 			$email = $id_or_email->comment_author_email;
+		else
+			$email = $id_or_email;
+		
+		//since we're hooking directly into get_avatar,
+		//we need to make sure another avatar hasn't been selected
+		if ( strpos( $default, $this->url ) !== false ) {
 			$email = empty( $email ) ? 'nobody' : md5( $email );
+			
+			//in rare cases were there is no email associated with the comment (like Mr WordPress)
+			//we have to work around a bit to insert the custom avatar
+			$direct = get_option('avatar_default');
+			$new_av_url = str_replace( 'emailhash', $email, $direct );
+			// 'www' version for WP2.9 and older
+			if ( strpos( $default, 'http://0.gravatar.com/avatar/') === 0 || strpos( $default, 'http://www.gravatar.com/avatar/') === 0 )
+				$avatar = str_replace( $default, $new_av_url."&size={$size}x{$size}", $avatar );
+
+			//otherwise, just swap the placeholder with the hash
 			$avatar = str_replace( 'emailhash', $email, $avatar );
+			
+			//this is ugly, but has to be done
+			//make sure we pass the correct size params to the generated avatar
+			$avatar = str_replace( '%3F', "%3Fsize={$size}x{$size}%26", $avatar );
+			
 		}
+
 		return $avatar;
 	}	
 	function scripts( $hook ) {
+		//we use this js for the live preview when toggling avatar options 
 		if ( $hook != 'options-discussion.php' ) return;
 		wp_enqueue_script( 'jquery' );
 		wp_enqueue_script( 'robohash', plugins_url( 'robohash.js', __FILE__ ), array('jquery') );
@@ -80,12 +108,5 @@ class robohashavatar {
 		}
 	}
 
-	function front_end_enocde() {
-		add_filter( 'option_avatar_default', array( &$this, 'encode_for_display' ) );
-	}
-		function encode_for_display( $option ) {
-			return urlencode( $option );
-		}
-	
 }
 new robohashavatar( );
