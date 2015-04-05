@@ -1,27 +1,31 @@
 jQuery(document).ready( function($) {
 
-	$('select#robohash_bot').change( function() {
-		img = $(this).siblings('img');
+	update_image( 'select#robohash_bot', 'set' );
+	update_image( 'select#robohash_bg', 'bgset' );
 
-		url = img.attr('src').replace( /%3Fset%3D(set[1-3]|any)%26/g, '%3Fset%3D' +$(this).val() + '%26' );
- 		img.attr('src', $('#spinner').val() );
- 		img.attr('src', url );
+	function update_image( selector, key ) {
 
- 		input = $(this).siblings('input[name="avatar_default"]');
-		url2 = input.val().replace( /\?set=(set[1-3]|any)&/g, '?set=' +$(this).val() + '&' );
-		input.val( url2 );
-	});
+		$( selector ).on( 'change', function() {
 
-	$('select#robohash_bg').change( function() {
-		img = $(this).siblings('img');
+			var regex   = new RegExp( '(/|F)' + key + "_\\w*", "g"),
+				spinner = $('#spinner').val(),
+				img     = $(this).siblings('img'),
+				src     = img.attr('src'),
+				url     = src.replace( regex, '$1' + key + '_' + $(this).val() );
 
-		url = img.attr('src').replace( /%26bgset%3D(bg[1-3]|any|)%26/g, '%26bgset%3D' +$(this).val() + '%26' );
- 		img.attr('src', $('#spinner').val() );
- 		img.attr('src', url );
- 		
- 		input = $(this).siblings('input[name="avatar_default"]');
-		url2 = input.val().replace( /bgset=(bg[1-3]|any|)/g, 'bgset=' +$(this).val() );
-		input.val( url2 );
-	});
+			img.attr('src', spinner );
+			img.attr('srcset', spinner );
+
+			setTimeout( function() {
+				img.attr('src', url );
+				img.attr('srcset', url );
+			}, 500 );
+
+			input = $(this).siblings('input[name="avatar_default"]');
+			value = input.val().replace( regex, '$1' + key + '_' + $(this).val() );
+			input.val( value );
+		});
+
+	}
 
 });

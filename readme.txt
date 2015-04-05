@@ -1,16 +1,16 @@
 === RoboHash Avatar ===
-Contributors: trepmal 
+Contributors: trepmal
 Donate link: http://kaileylampert.com/donate
 Tags: avatar, gravatar, robohash
 Requires at least: 2.8
-Tested up to: 3.3
+Tested up to: 4.2
 Stable tag: trunk
 
-Add RoboHash generated images as default avatar options  
+Add RoboHash generated images as default avatar options
 
 == Description ==
 
-Add [RoboHash](http://robohash.org) generated images to the Default Avatar list. 
+Add [RoboHash](http://robohash.org) generated images to the Default Avatar list.
 
 == Installation ==
 
@@ -33,6 +33,10 @@ Some themes expect an avatar to be a certain size and don't resize an image that
 Now with background options
 
 == Changelog ==
+
+= 0.5 =
+* Change RoboHash url to use directory-style instead of query strings for Gravatar compat.
+* DRY JavaScript
 
 = 0.4 =
 * Fixed it 'cause I broke it. Sorry
